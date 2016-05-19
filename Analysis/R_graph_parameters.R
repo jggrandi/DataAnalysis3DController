@@ -29,3 +29,6 @@ p1 <- p1 + theme(legend.position="none") # remove a legenda do plot1
 p22 <- p2 + geom_rect(aes(xmin = Start, xmax = Finish, ymax = 1, fill = Action)) + theme(legend.position="none") # cria o segundo gráfico sem legenda
 
 grid.arrange(p1,legend,p22,ncol=2,nrow=2,layout_matrix = rbind(c(1,2),c(3,2)),widths = c(2.5,0.2),heights=c(2.7,2.7)) # coloca gráficos um embaixo do outro com a legenda centralizada na direita
+
+# Parâmetros para gerar os Gráficos
+ppt19 <- ggplot(Team19, aes(ymin=0, xmax=200)) + geom_rect(aes(xmin = Start, xmax = Finish, ymin=User, ymax=User+1, fill = Action)) + scale_y_continuous(breaks=pretty_breaks(2),name="Users", limits = c(0, 2)) +scale_x_continuous(breaks=pretty_breaks(10),name="Time in seconds",limits = c(0,200)) + ggtitle("Team19") + theme_minimal()
