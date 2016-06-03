@@ -1,0 +1,208 @@
+﻿<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title></title>
+
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<style type="text/css">
+${demo.css}
+		</style>
+	</head>
+	<body style="background-color: #111; color:#fff">
+        <script src="js/highstock.js"></script>
+        <script src="js/modules/exporting.js"></script>
+        <script src="js/themes/dark-green.js"></script>
+
+        <input type="file" id="fileinput" />
+	</body>
+</html>
+<script type="text/javascript">
+
+    var data, users, checkPoints, team, charts = [];
+    var scrollDisableEvent = false, scrollUpdate = false, scrollLastChart;
+
+    function updateScrolls() {
+        if (!scrollUpdate) return;
+        disableSetExtremesEvent = true;
+
+        scrollMin = charts[scrollLastChart].highcharts().xAxis[0].getExtremes().min;
+        scrollMax = charts[scrollLastChart].highcharts().xAxis[0].getExtremes().max;
+
+        for (i in charts) {
+            if (i == scrollLastChart) continue;
+            charts[i].highcharts().xAxis[0].setExtremes(scrollMin, scrollMax);
+        }
+        disableSetExtremesEvent = false;
+        scrollUpdate = false;
+    }
+
+    function addChart(title, d, height) {
+        if (!height) height = 400;
+
+       
+        var seriesOptions = [];
+               
+        for(var i=0; i<d.length; i++){
+            seriesOptions.push({
+                name: "User "+(i+1),
+                data: d[i],
+                type: 'spline',
+            });
+        }
+        var id = charts.length;
+
+        $('body').append('<div class="container" style="height: ' + height + 'px; min-width: 310px"></div>')
+        charts.push($('.container').last().highcharts('StockChart', {
+
+            rangeSelector: {
+                selected: 4
+            },
+            yAxis: {
+                labels: {
+                    formatter: function () {
+                        return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                    }
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 2,
+                    color: 'silver'
+                }]
+            },
+
+            title: {
+                text: title
+            },
+
+            xAxis: {
+                events: {
+                    setExtremes: function (e) {
+                        if (scrollUpdate) return;
+                        scrollUpdate = true;
+                        scrollLastChart = id;
+                    }
+                }
+            },
+
+            plotOptions: {
+                series: {
+                    //compare: 'percent'
+                }
+            },
+
+            tooltip: {
+                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+                valueDecimals: 2
+            },
+
+            series: seriesOptions
+        }));
+    }
+
+    function getColumn(c){
+        var r = [];
+        for (var i = 2; i < data.length; i++) {
+            r.push(data[i][c]);
+        }
+        return r;
+    }
+
+    function length(x, y, z) {
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+    function angle(w) {
+        return 2 * Math.acos(w) * (180 / Math.PI);
+    }
+
+    function operation(f, a, b, c, d, e) {
+        var r = [];
+        if (e != undefined) for (i in a) r.push(f(a[i], b[i], c[i], d[i], e[i]));
+        else if (d != undefined) for (i in a) r.push(f(a[i], b[i], c[i], d[i]));
+        else if (c != undefined) for (i in a) r.push(f(a[i], b[i], c[i]));
+        else if (b != undefined) for (i in a) r.push(f(a[i], b[i]));
+        else for (i in a) r.push(f(a[i]));
+        return r;
+    }
+
+    function userColumn(i){
+        return 17 + checkPoints + i * 14;
+    }
+
+    function init(){
+        data = data.split("\n");
+        for (i in data) {
+            data[i] = data[i].split(",");
+            if (i != 1) for (j in data[i]) data[i][j] = parseFloat(data[i][j]);
+        }
+
+        if (data[data.length-1].length < 2) data.pop();
+
+        users = data[0][0];
+        checkPoints = data[0][1];
+        team = data[0][2];
+        
+
+        var d = [];
+        for (var i = 0; i < checkPoints; i++) {
+            d.push(getColumn(17 + i));
+        }
+        addChart("Dist CheckPoint", d);
+
+        var d = [];
+        for (var i = 0; i < users; i++) {
+            d.push(getColumn(userColumn(i) + 1));
+        }
+        addChart("Connected", d, 300);
+
+        var d = [];
+        for (var i = 0; i < users; i++) {
+            d.push(operation(length, getColumn(userColumn(i) + 2), getColumn(userColumn(i) + 3), getColumn(userColumn(i) + 4)));
+        }
+        addChart("Translation Magnitude", d);
+
+        var d = [];
+        for (var i = 0; i < users; i++) {
+            d.push(operation(angle, getColumn(userColumn(i) + 8)));
+        }
+        addChart("Angle Rotation", d);
+
+        var d = [];
+        for (var i = 0; i < users; i++) {
+            d.push(getColumn(userColumn(i) + 9));
+        }
+        addChart("Scalling", d);
+
+        var d = [];
+        for (var i = 0; i < users; i++) {
+            d.push(operation(angle, getColumn(userColumn(i) + 13)));
+        }
+        addChart("Camera Rotation", d);
+
+        addChart("Collision", [getColumn(13)], 300);
+
+        addChart("Collision Feedback Magnitude", [operation(length, getColumn(14), getColumn(15), getColumn(16))]);
+
+        setInterval(updateScrolls, 1000);
+
+    }
+
+
+    function readSingleFile(evt) {
+        var f = evt.target.files[0];
+
+        if (f) {
+            var r = new FileReader();
+            r.onload = function (e) {
+                var contents = e.target.result;
+                data = contents;
+                init();
+            }
+            r.readAsText(f);
+        } else {
+            alert("Failed to load file");
+        }
+    }
+
+    document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+</script>

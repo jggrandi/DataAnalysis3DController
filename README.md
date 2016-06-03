@@ -1,5 +1,8 @@
-# How this repository is organized
+# Portas Abertas Game Data Analysis
 
-Each branch correspond to a specific data analysis
+## Folder organization:
 
-1. PortasAbertasGame: Corresponds to the analysis of collected data in the Portas Abertas event.
+1. Raw: The raw data collected without modifications
+2. Formated: The data processed/tabulated for better manipulation
+3. Analysis: Scripts, Markdowns and statistics outputs
+4. Results: Output charts, analysis generated 
