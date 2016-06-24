@@ -1,4 +1,4 @@
-# Symposium on Spatial User Interaction Data Analysis
+# Symposium on Virtual and Augmented Reality (SVR)
 
 ## Folder organization:
 
