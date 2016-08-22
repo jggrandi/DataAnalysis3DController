@@ -1,0 +1,95 @@
+---
+title: "Collaborative 3DUI Data Analysis"
+author: "Jerônimo G. Grandi"
+date: "August 22, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(psych)
+```
+
+
+## Data analyisis
+
+This is a on going analysis of the data collected in the user experiment performed.... 
+
+## Summary
+First we set the environment, load and show the raw data.  
+ 
+``` {r raw}
+setwd("/home/jeronimo/Documents/DataAnalysis3DController/Analysis/R")
+dAvgPerTask <- read.csv("SummaryToR.csv")
+dAvgPerTask
+```
+The data is arranged by Task vs. Team members. Collumns are organized as follows:   
+
+* Members: Number of users in the team;   
+* T1, T2, T3, T4: Time to complete task 1 to 4;    
+* E1, E2, E3, E4: Errors in task 1 to 4. 
+
+We split the data for better manipulation:
+
+```{r}
+dAvgTime <- subset(dAvgPerTask, select = c(2,3,4,5))
+dAvgError <- subset(dAvgPerTask, select = c(6,7,8,9))
+```
+
+Below the data is summarized:
+
+```{r dataAverage}
+describe(dAvgTime)
+describe(dAvgError)
+
+```
+
+### Plots
+
+Time of task completion vs. Task for all combinations of teams:
+The code used to generate the charts is:
+
+```{r boxplot}
+boxplot(dAvgTime,xlab="Tasks",ylab="Time",main="Time to complete the tasks")
+boxplot(dAvgError,xlab="Tasks",ylab="Error",main="Error perfored in the tasks")
+
+```
+
+## Analysis of time of completion per task
+
+### Shapiro
+First, we perform the Shapiro normality test. This test determine if the data is normally distributed. It is important to determine if the data is normally distributed to conduce posterior tests.
+
+```{r shapiro 1}
+shap_dT <- lapply(dAvgTime, shapiro.test)
+shap_dE <- lapply(dAvgError, shapiro.test)
+res_shap_dT <- sapply(shap_dT, `[`, c("statistic","p.value"))
+res_shap_dE <- sapply(shap_dE, `[`, c("statistic","p.value"))
+
+res_shap_dT
+res_shap_dE
+```
+
+As we can see, the $p-value$ of most Shapiro tests reveled that the data are not normally distributed. Since in this test the comparisons are made with the same subjects and we are varying the tasks, the next step is to perform a Friedman analysis.
+
+### Friedman
+
+Friedman test is a non-parametric randomized block analysis of variance. Which is to say it is a non-parametric version of a one way ANOVA with repeated measures. That means that while a simple ANOVA test requires the assumptions of a normal distribution and equal variances (of the residuals), the Friedman test is free from those restriction. The price of this parametric freedom is the loss of power (of Friedman’s test compared to the parametric ANOVa versions).
+
+The hypotheses for the comparison across repeated measures are:   
+
+* H0: The distributions (whatever they are) are the same across repeated measures   
+* H1: The distributions across repeated measures are different   
+
+The test statistic for the Friedman’s test is a Chi-square with [(number of repeated measures)-1] degrees of freedom. A detailed explanation of the method for computing the Friedman test is available on Wikipedia.
+
+
+
+
+
+
+
+
+
+
