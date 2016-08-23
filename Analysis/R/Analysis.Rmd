@@ -11,10 +11,100 @@ library(dplyr)
 library(psych)
 ```
 
+``` {r dir,echo=FALSE}
+setwd("/home/jeronimo/Documents/DataAnalysis3DController/Analysis/R")
+```
 
-## Data analyisis
+
+# Data analyisis
 
 This is a on going analysis of the data collected in the user experiment performed.... 
+
+# Comparisons between groups
+
+##Hypotesis
+
+* Groups with more than one member perform the tasks with less errors.
+* Groups with two and three members perform the tasks with less errors than with one and four.
+* Groups with more than one member perform the tasks faster.
+* Groups with two and three members perform the tasks faster than with one and four.
+* Task one and two are easier than three and four.
+
+
+## Data Summary
+
+``` {r load}
+errorXGroups <- read.csv("ErrorXGroups.csv",header = FALSE)
+errorXGroups
+timeXGroups <- read.csv("TimeXGroups.csv", header = FALSE)
+timeXGroups
+```
+   
+Below the data is summarized:   
+
+```{r summary}
+describe(errorXGroups)
+describe(timeXGroups)
+```
+   
+And ploted:
+
+```{r plot1}
+boxplot(timeXGroups,xlab="Team members",ylab="Time",main="Time X Groups")
+boxplot(errorXGroups,xlab="Team members",ylab="Error",main="Error X Groups")
+```
+
+### Correlation Analysis
+
+The Pearson product-moment correlation coefficient is a measure of the linear correlation between two variables X and Y, giving a value between +1 and -1 inclusive, where 1 is total positive correlation, 0 is no correlation, and -1 is total negative correlation. It is widely used in the sciences as a measure of the degree of linear dependence between two variables. 
+
+```{r fig.width=100,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/correlation_TimeXGrupos.png")
+ grid.raster(img)
+```
+
+```{r fig.width=100,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/correlation_ErroXGrupos.png")
+ grid.raster(img)
+```
+
+### Kruskal-Wallis
+
+A collection of data samples are independent if they come from unrelated populations and the samples do not affect each other. Using the Kruskal-Wallis Test, we can decide whether the population distributions are identical without assuming them to follow the normal distribution.
+
+
+```{r fig.width=100,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/ErroXQntPessoas.png")
+ grid.raster(img)
+```
+
+```{r fig.width=100,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/ErroPerCheckpointXGrupos.png")
+ grid.raster(img)
+```
+
+```{r fig.width=100,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/kruskal_posHoc_Student.png")
+ grid.raster(img)
+```
+
+# Comparisons between tasks
+
+## Hypotesis
+
+* Task 1 and 2 are easier than 3 and 4;
+* Task 4 is performed better than task 3
+
 
 ## Summary
 First we set the environment, load and show the raw data.  
@@ -84,24 +174,18 @@ The hypotheses for the comparison across repeated measures are:
 
 The test statistic for the Friedman's test is a Chi-square with [(number of repeated measures)-1] degrees of freedom. A detailed explanation of the method for computing the Friedman test is available on Wikipedia.
 
-
-# Comparisons between groups
-
-##Hypotesis
-
-* Groups with more than one member perform the tasks with less errors.   
-* Groups with two and three members perform the tasks with less errors than with one and four.
-* Groups with more than one member perform the tasks faster.   
-* Groups with two and three members perform the tasks faster than with one and four.
-* Task one and two are easier than three and four
-
-
-
-### Kruskal-Wallis
-
-A collection of data samples are independent if they come from unrelated populations and the samples do not affect each other. Using the Kruskal-Wallis Test, we can decide whether the population distributions are identical without assuming them to follow the normal distribution.
-
-
+```{r fig.width=200,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/friedman_TempoXTarefa.png")
+grid.raster(img)
+```
+```{r fig.width=200,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/friedman_ErroXTarefa.png") 
+grid.raster(img)
+```
 
 
 
