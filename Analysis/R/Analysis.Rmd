@@ -187,6 +187,25 @@ img <- readPNG("../../Results/friedman_ErroXTarefa.png")
 grid.raster(img)
 ```
 
+## Analysis of learning between tasks 3 and 4
+
+As the data is not normally distributed and the comparison is between tasks (instead of groups) we performed a Friedman analysis.
+
+
+
+```{r fig.width=200,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/fiedman_tasks3and4_error.png") 
+grid.raster(img)
+```
+
+```{r fig.width=200,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/fiedman_tasks3and4_time.png") 
+grid.raster(img)
+```
 
 
 
