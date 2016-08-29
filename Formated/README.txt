@@ -15,3 +15,5 @@ Folders:
 20-Task4
 23-Task3
 
+
+* In file 3-Task3, we add values for Camera W.
