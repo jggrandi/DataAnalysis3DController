@@ -7,11 +7,11 @@
 library(dplyr)
 library(tidyr)
 
-qntusers <- 3
+qntusers <- 2
 if(qntusers == 1)
   users <- select(X23.1.Task1.2016.06.10.18.32.14,ends_with(".1"), -starts_with("User"),-starts_with("Con")) #select only user action in object transformation 
 if(qntusers == 2)
-  users <- select(X22.2.Task1.2016.06.10.18.12.34,ends_with(".1"),ends_with(".2"), -starts_with("User"),-starts_with("Con")) #select only user action in object transformation 
+  users <- select(X6.2.Task3.2016.06.07.10.18.40,ends_with(".1"),ends_with(".2"), -starts_with("User"),-starts_with("Con")) #select only user action in object transformation 
 if(qntusers == 3)
   users <- select(X18.3.Task1.2016.06.09.10.19.23,ends_with(".1"),ends_with(".2"), ends_with(".3"), -starts_with("User"),-starts_with("Con")) #select only user action in object transformation 
 if(qntusers == 4)
@@ -172,45 +172,45 @@ loadByTotalTime <- as.data.frame.array(t(loadByTotalTime))
 loadByTotalTime <- bind_cols(loadByTotalTime,taskTotalLoad)
 
 
-if(qntusers == 1){
-  loadPerUser <- data.frame(U1totalTrans,U1totalRot,U1totalScale,U1totalCam,allUsersTotalTrans,allUsersTotalRot,allUsersTotalScale,allUsersTotalCam)
-  #loadPerUser1_task1 <- loadPerUser #if first 
-  #loadByTotalTime1_task1 <- loadByTotalTime #if first
-  #loadByWorkedTime1_task1 <- loadByWorkedTime #if first
-  loadPerUser1_task1 <- bind_rows(loadPerUser1_task1,loadPerUser) # else add to the exiting
-  loadByTotalTime1_task1<- bind_rows(loadByTotalTime1_task1,loadByTotalTime) # else add to the exiting 
-  loadByWorkedTime1_task1<- bind_rows(loadByWorkedTime1_task1,loadByWorkedTime) # else add to the exiting 
-
-}
-if(qntusers == 2){
-  loadPerUser <- data.frame(U1totalTrans,U1totalRot,U1totalScale,U1totalCam,U2totalTrans,U2totalRot,U2totalScale,U2totalCam,allUsersTotalTrans,allUsersTotalRot,allUsersTotalScale,allUsersTotalCam)
-  #loadPerUser2_task1 <- loadPerUser #if first 
-  #loadByTotalTime2_task1 <- loadByTotalTime #if first
-  #loadByWorkedTime2_task1 <- loadByWorkedTime #if first
-  loadPerUser2_task1 <- bind_rows(loadPerUser2_task1,loadPerUser) # else add to the exiting
-  loadByTotalTime2_task1 <- bind_rows(loadByTotalTime2_task1,loadByTotalTime) # else add to the exiting 
-  loadByWorkedTime2_task1 <- bind_rows(loadByWorkedTime2_task1,loadByWorkedTime) # else add to the exiting 
-}
-if(qntusers == 3){
-  loadPerUser <- data.frame(U1totalTrans,U1totalRot,U1totalScale,U1totalCam,U2totalTrans,U2totalRot,U2totalScale,U2totalCam,U3totalTrans,U3totalRot,U3totalScale,U3totalCam,allUsersTotalTrans,allUsersTotalRot,allUsersTotalScale,allUsersTotalCam)
-  #loadPerUser3_task1 <- loadPerUser #if first 
-  #loadByTotalTime3_task1 <- loadByTotalTime #if first
-  #loadByWorkedTime3_task1 <- loadByWorkedTime #if first
-  loadPerUser3_task1 <- bind_rows(loadPerUser3_task1,loadPerUser) # else add to the exiting
-  loadByTotalTime3_task1 <- bind_rows(loadByTotalTime3_task1,loadByTotalTime) # else add to the exiting 
-  loadByWorkedTime3_task1 <- bind_rows(loadByWorkedTime3_task1,loadByWorkedTime) # else add to the exiting 
-  
-}
-
-if(qntusers == 4){
-  loadPerUser <- data.frame(U1totalTrans,U1totalRot,U1totalScale,U1totalCam,U2totalTrans,U2totalRot,U2totalScale,U2totalCam,U3totalTrans,U3totalRot,U3totalScale,U3totalCam,U4totalTrans,U4totalRot,U4totalScale,U4totalCam,allUsersTotalTrans,allUsersTotalRot,allUsersTotalScale,allUsersTotalCam)
-  #loadPerUser4_task1 <- loadPerUser #if first 
-  #loadByTotalTime4_task1 <- loadByTotalTime #if first
-  #loadByWorkedTime4_task1 <- loadByWorkedTime #if first
-  loadPerUser4_task1 <- bind_rows(loadPerUser4_task1,loadPerUser) # else add to the exiting
-  loadByTotalTime4_task1 <- bind_rows(loadByTotalTime4_task1,loadByTotalTime) # else add to the exiting 
-  loadByWorkedTime4_task1 <- bind_rows(loadByWorkedTime4_task1,loadByWorkedTime) # else add to the exiting 
-}
+# if(qntusers == 1){
+#   loadPerUser <- data.frame(U1totalTrans,U1totalRot,U1totalScale,U1totalCam,allUsersTotalTrans,allUsersTotalRot,allUsersTotalScale,allUsersTotalCam)
+#   #loadPerUser1_task1 <- loadPerUser #if first 
+#   #loadByTotalTime1_task1 <- loadByTotalTime #if first
+#   #loadByWorkedTime1_task1 <- loadByWorkedTime #if first
+#   loadPerUser1_task1 <- bind_rows(loadPerUser1_task1,loadPerUser) # else add to the exiting
+#   loadByTotalTime1_task1<- bind_rows(loadByTotalTime1_task1,loadByTotalTime) # else add to the exiting 
+#   loadByWorkedTime1_task1<- bind_rows(loadByWorkedTime1_task1,loadByWorkedTime) # else add to the exiting 
+# 
+# }
+# if(qntusers == 2){
+#   loadPerUser <- data.frame(U1totalTrans,U1totalRot,U1totalScale,U1totalCam,U2totalTrans,U2totalRot,U2totalScale,U2totalCam,allUsersTotalTrans,allUsersTotalRot,allUsersTotalScale,allUsersTotalCam)
+#   #loadPerUser2_task1 <- loadPerUser #if first 
+#   #loadByTotalTime2_task1 <- loadByTotalTime #if first
+#   #loadByWorkedTime2_task1 <- loadByWorkedTime #if first
+#   loadPerUser2_task1 <- bind_rows(loadPerUser2_task1,loadPerUser) # else add to the exiting
+#   loadByTotalTime2_task1 <- bind_rows(loadByTotalTime2_task1,loadByTotalTime) # else add to the exiting 
+#   loadByWorkedTime2_task1 <- bind_rows(loadByWorkedTime2_task1,loadByWorkedTime) # else add to the exiting 
+# }
+# if(qntusers == 3){
+#   loadPerUser <- data.frame(U1totalTrans,U1totalRot,U1totalScale,U1totalCam,U2totalTrans,U2totalRot,U2totalScale,U2totalCam,U3totalTrans,U3totalRot,U3totalScale,U3totalCam,allUsersTotalTrans,allUsersTotalRot,allUsersTotalScale,allUsersTotalCam)
+#   #loadPerUser3_task1 <- loadPerUser #if first 
+#   #loadByTotalTime3_task1 <- loadByTotalTime #if first
+#   #loadByWorkedTime3_task1 <- loadByWorkedTime #if first
+#   loadPerUser3_task1 <- bind_rows(loadPerUser3_task1,loadPerUser) # else add to the exiting
+#   loadByTotalTime3_task1 <- bind_rows(loadByTotalTime3_task1,loadByTotalTime) # else add to the exiting 
+#   loadByWorkedTime3_task1 <- bind_rows(loadByWorkedTime3_task1,loadByWorkedTime) # else add to the exiting 
+#   
+# }
+# 
+# if(qntusers == 4){
+#   loadPerUser <- data.frame(U1totalTrans,U1totalRot,U1totalScale,U1totalCam,U2totalTrans,U2totalRot,U2totalScale,U2totalCam,U3totalTrans,U3totalRot,U3totalScale,U3totalCam,U4totalTrans,U4totalRot,U4totalScale,U4totalCam,allUsersTotalTrans,allUsersTotalRot,allUsersTotalScale,allUsersTotalCam)
+#   #loadPerUser4_task1 <- loadPerUser #if first 
+#   #loadByTotalTime4_task1 <- loadByTotalTime #if first
+#   #loadByWorkedTime4_task1 <- loadByWorkedTime #if first
+#   loadPerUser4_task1 <- bind_rows(loadPerUser4_task1,loadPerUser) # else add to the exiting
+#   loadByTotalTime4_task1 <- bind_rows(loadByTotalTime4_task1,loadByTotalTime) # else add to the exiting 
+#   loadByWorkedTime4_task1 <- bind_rows(loadByWorkedTime4_task1,loadByWorkedTime) # else add to the exiting 
+# }
 
 
 rm(U1Trans,U2Trans,U3Trans,U4Trans)
