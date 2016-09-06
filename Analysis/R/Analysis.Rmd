@@ -207,7 +207,23 @@ img <- readPNG("../../Results/fiedman_tasks3and4_time.png")
 grid.raster(img)
 ```
 
+## Analysis Correlation between Errors and Work division
 
+
+```{r fig.width=200,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/Correlacao_Error_DistribuicaoDeTrabalho.png") 
+grid.raster(img)
+```
+
+
+```{r fig.width=200,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("../../Results/Regressao_Error_DistTrabalho.png") 
+grid.raster(img)
+```
 
 
 
