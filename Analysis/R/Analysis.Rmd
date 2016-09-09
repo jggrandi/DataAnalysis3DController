@@ -9,10 +9,13 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(psych)
+library(corrgram)
+library(Hmisc)
 ```
-
+libr
 ``` {r dir,echo=FALSE}
-setwd("/home/jeronimo/Documents/DataAnalysis3DController/Analysis/R")
+#setwd("/home/jeronimo/Documents/DataAnalysis3DController/Analysis/R")
+setwd("C:/Users/jeronimo/Documents/GitHub/DataAnalysis3DController/Analysis/R")
 ```
 
 
@@ -34,8 +37,11 @@ This is a on going analysis of the data collected in the user experiment perform
 ## Data Summary
 
 ``` {r load}
-sourceData <- read.csv("newTaskTimeAndErrorPerTeam.csv",header = TRUE,  sep=";")
-sourceData
+sourceDataGroups <- read.csv("errorTimeAndVarPerTeam.csv",header = TRUE,  sep=";")
+sourceDataGroups
+
+sourceDataTasks <- read.csv("errorAndTimePerTask.csv",header = TRUE,  sep=";")
+sourceDataTasks
 #errorXGroups <- read.csv("ErrorXGroups.csv",header = FALSE)
 #errorXGroups
 #timeXGroups <- read.csv("TimeXGroups.csv", header = FALSE)
@@ -47,13 +53,14 @@ Below the data is summarized:
 ```{r summary}
 #describe(errorXGroups)
 #describe(timeXGroups)
-describe(sourceData)
+describe(sourceDataGroups)
 ```
    
 And ploted:
 
 ```{r plot1}
-boxplot(sourceData[2:5],xlab="Team members",ylab="Time",main="Time X Groups")
+boxplot(sourceDataGroups[1:4],xlab="Team members",ylab="Time",main="Time X Groups")
+boxplot(sourceDataGroups[5:8],xlab="Team members",ylab="Error",main="Error X Groups")
 #boxplot(timeXGroups,xlab="Team members",ylab="Time",main="Time X Groups")
 #boxplot(errorXGroups,xlab="Team members",ylab="Error",main="Error X Groups")
 ```
@@ -62,23 +69,128 @@ boxplot(sourceData[2:5],xlab="Team members",ylab="Time",main="Time X Groups")
 
 The Pearson product-moment correlation coefficient is a measure of the linear correlation between two variables X and Y, giving a value between +1 and -1 inclusive, where 1 is total positive correlation, 0 is no correlation, and -1 is total negative correlation. It is widely used in the sciences as a measure of the degree of linear dependence between two variables. 
 
+First we need to take the average of time and error of each team:
+
+```{r corr}
+sourceDataTasks$MeanTime <- rowMeans(subset(sourceDataTasks, select = c(2,3,4,5)), na.rm = TRUE)
+sourceDataTasks$MeanError <- rowMeans(subset(sourceDataTasks, select = c(6,7,8,9)), na.rm = TRUE)
+```
+
+Now we can make the pearson correlation analysis. It will tell us if there is a correlation between team members and time to solve the tasks, and team members and errors performed during the tasks.
+
+First, the team members vs. time:
+
+```{r corr2}
+teamTimeCorr <- sourceDataTasks[,c(1,10)]
+teamTimeCorr <- rcorr(as.matrix(teamTimeCorr))
+teamTimeCorr
+```
+
+Team members vs. error:
+
+```{r corr2}
+teamErrorCorr <- sourceDataTasks[,c(1,11)]
+teamErrorCorr <- rcorr(as.matrix(teamErrorCorr))
+teamErrorCorr
+```
+
+As the `r teamTimeCorr.P` is greater than 0.05, we assume that there is no correlation between team members and time to complete the tasks. In the other hand, `r teamErrorCorr.P` is < 0.0001, so there is a strong correlation between team members and errors performed. At this point we don't know if the errors grow with more team members or in the other way around.
+
+### Shapiro-Wilk test
+Before we conduce a variance test on the data to evaluate if more or less members cause more errors, we need to check if the data is normally distributed. For this test, we use the Shapiro-wilk test for each group of team members. 
+
+```{r shapiro1}
+sapply(lapply(sourceDataGroups[1:8], shapiro.test), `[`, c("statistic","p.value"))
+
+```
+
+As the P < 0.05 of most tests, we know that our data are not normally distributed. For this case, and because we are comparing distinct groups, the variance test will be performed by a Kruskal-Wallis. 
+
+### Kruskal-Wallis
+
+
+#```{r kruskal}
+#kruskal.test(sourceDataGroups[1:4])
+#kruskal.test(sourceDataGroups[5:8])
+#```
+
+We perform the Kruskal test with Dunn posthoc with the time data:
+
+```{r dunn1 posthoc}
+library(dunn.test)
+timeToDunn <- gather(sourceDataGroups[1:4], "group", "errors", 1:4)
+dunn.test(toDunn$error,toDunn$group, kw=TRUE, method="bonferroni")
+```
+
+... and with the error data:
+
+```{r dunn2 posthoc}
+errorToDunn <- gather(sourceDataGroups[5:8], "group", "errors", 5:8)
+dunn.test(toDunn$error,toDunn$group, kw=TRUE, method="bonferroni")
+```
+
+
+# Comparison between tasks
+
+## Hypotesis
+
+* H1. Task 1 and 2 are easier than 3 and 4;
+* H2. Task 4 is performed with less errors than task 3;
+* H3. Task 4 is performed in less time than task 3;
+
+If H2 or/and H3 is confirmed, we can say that the teams have improved their performance with only one trainning.
+
+
+## Summary
+The data is arranged by Task vs. Team members. Collumns are organized as follows:
+
+* Members: Number of users in the team;
+* T1, T2, T3, T4: Time to complete task 1 to 4;
+* E1, E2, E3, E4: Errors in task 1 to 4.
+
+
+Below the data is summarized:
+
+```{r dataAverage}
+ describe(sourceDataTasks[2:5])
+ describe(sourceDataTasks[6:9])
+
+ ```
+
+### Plots
+
+Time of task completion vs. Task for all combinations of teams:
+The code used to generate the charts is:
+```{r boxplot}
+boxplot(sourceDataTasks[2:5],xlab="Tasks",ylab="Time",main="Time to complete the tasks")
+boxplot(sourceDataTasks[6:9],xlab="Tasks",ylab="Error",main="Error perfored in the tasks")
+
+```
+
+## Analysis of time of completion per task
+
+### Shapiro
+First, we perform the Shapiro normality test. This test determine if the data is normally distributed. It is important to determine if the data is normally distributed to conduce posterior tests.
+
+```{r shapiro 1}
+sapply(lapply(errorAndTimePerTask[1:8], shapiro.test), `[`, c("statistic","p.value"))
+```
+
+As we can see, the $p-value$ of most Shapiro tests reveled that the data are not normally distributed. Since in this test the comparisons are made with the same subjects and we are varying the tasks, the next step is to perform a Friedman analysis.
+
+### Friedman
+
+Friedman test is a non-parametric randomized block analysis of variance. Which is to say it is a non-parametric version of a one way ANOVA with repeated measures. That means that while a simple ANOVA test requires the assumptions of a normal distribution and equal variances (of the residuals), the Friedman test is free from those restriction. The price of this parametric freedom is the loss of power (of Friedman's test compared to the parametric ANOVa versions).
+
+The hypotheses for the comparison across repeated measures are:
+
+* H0: The distributions (whatever they are) are the same across repeated measures
+* H1: The distributions across repeated measures are different
+
+The test statistic for the Friedman's test is a Chi-square with [(number of repeated measures)-1] degrees of freedom. A detailed explanation of the method for computing the Friedman test is available on Wikipedia.
 
 
 
-# ```{r fig.width=100,echo=FALSE}
-# library(png)
-# library(grid)
-# img <- readPNG("../../Results/correlation_TimeXGrupos.png")
-#  grid.raster(img)
-# ```
-# 
-# ```{r fig.width=100,echo=FALSE}
-# library(png)
-# library(grid)
-# img <- readPNG("../../Results/correlation_ErroXGrupos.png")
-#  grid.raster(img)
-# ```
-# 
 # ### Kruskal-Wallis
 # 
 # A collection of data samples are independent if they come from unrelated populations and the samples do not affect each other. Using the Kruskal-Wallis Test, we can decide whether the population distributions are identical without assuming them to follow the normal distribution.
