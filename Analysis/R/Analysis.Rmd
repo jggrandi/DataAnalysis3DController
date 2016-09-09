@@ -1,6 +1,6 @@
 ---
 title: "Collaborative 3DUI Data Analysis"
-author: "Jerônimo G. Grandi"
+author: "JerÃ´nimo G. Grandi"
 date: "August 22, 2016"
 output: pdf_document
 ---
@@ -11,11 +11,13 @@ library(dplyr)
 library(psych)
 library(corrgram)
 library(Hmisc)
+library(tidyr)
+library(dunn.test)
 ```
-libr
+
 ``` {r dir,echo=FALSE}
-#setwd("/home/jeronimo/Documents/DataAnalysis3DController/Analysis/R")
-setwd("C:/Users/jeronimo/Documents/GitHub/DataAnalysis3DController/Analysis/R")
+setwd("/home/jeronimo/Documents/DataAnalysis3DController/Analysis/R")
+#setwd("C:/Users/jeronimo/Documents/GitHub/DataAnalysis3DController/Analysis/R")
 ```
 
 
@@ -37,32 +39,24 @@ This is a on going analysis of the data collected in the user experiment perform
 ## Data Summary
 
 ``` {r load}
-sourceDataGroups <- read.csv("errorTimeAndVarPerTeam.csv",header = TRUE,  sep=";")
+sourceDataGroups <- read.csv("errorTimeAndVarPerTeam.csv",header = TRUE,  sep=";", dec = ",")
 sourceDataGroups
 
 sourceDataTasks <- read.csv("errorAndTimePerTask.csv",header = TRUE,  sep=";")
 sourceDataTasks
-#errorXGroups <- read.csv("ErrorXGroups.csv",header = FALSE)
-#errorXGroups
-#timeXGroups <- read.csv("TimeXGroups.csv", header = FALSE)
-#timeXGroups
 ```
    
 Below the data is summarized:   
 
 ```{r summary}
-#describe(errorXGroups)
-#describe(timeXGroups)
 describe(sourceDataGroups)
 ```
    
 And ploted:
 
-```{r plot1}
+```{r boxplot1}
 boxplot(sourceDataGroups[1:4],xlab="Team members",ylab="Time",main="Time X Groups")
 boxplot(sourceDataGroups[5:8],xlab="Team members",ylab="Error",main="Error X Groups")
-#boxplot(timeXGroups,xlab="Team members",ylab="Time",main="Time X Groups")
-#boxplot(errorXGroups,xlab="Team members",ylab="Error",main="Error X Groups")
 ```
 
 ### Correlation Analysis
@@ -88,13 +82,13 @@ teamTimeCorr
 
 Team members vs. error:
 
-```{r corr2}
+```{r corr3}
 teamErrorCorr <- sourceDataTasks[,c(1,11)]
 teamErrorCorr <- rcorr(as.matrix(teamErrorCorr))
 teamErrorCorr
 ```
 
-As the `r teamTimeCorr.P` is greater than 0.05, we assume that there is no correlation between team members and time to complete the tasks. In the other hand, `r teamErrorCorr.P` is < 0.0001, so there is a strong correlation between team members and errors performed. At this point we don't know if the errors grow with more team members or in the other way around.
+As the  is greater than 0.05, we assume that there is no correlation between team members and time to complete the tasks. In the other hand, is < 0.0001, so there is a strong correlation between team members and errors performed. At this point we don't know if the errors grow with more team members or in the other way around.
 
 ### Shapiro-Wilk test
 Before we conduce a variance test on the data to evaluate if more or less members cause more errors, we need to check if the data is normally distributed. For this test, we use the Shapiro-wilk test for each group of team members. 
@@ -109,24 +103,24 @@ As the P < 0.05 of most tests, we know that our data are not normally distribute
 ### Kruskal-Wallis
 
 
-#```{r kruskal}
-#kruskal.test(sourceDataGroups[1:4])
-#kruskal.test(sourceDataGroups[5:8])
-#```
+
+<!-- kruskal.test(sourceDataGroups[1:4]) -->
+<!-- kruskal.test(sourceDataGroups[5:8]) -->
+
 
 We perform the Kruskal test with Dunn posthoc with the time data:
 
 ```{r dunn1 posthoc}
 library(dunn.test)
-timeToDunn <- gather(sourceDataGroups[1:4], "group", "errors", 1:4)
-dunn.test(toDunn$error,toDunn$group, kw=TRUE, method="bonferroni")
+timeToDunn <- gather(sourceDataGroups, "group", "errors", 1:4)
+dunn.test(timeToDunn$error,timeToDunn$group, kw=TRUE, method="bonferroni")
 ```
 
 ... and with the error data:
 
 ```{r dunn2 posthoc}
-errorToDunn <- gather(sourceDataGroups[5:8], "group", "errors", 5:8)
-dunn.test(toDunn$error,toDunn$group, kw=TRUE, method="bonferroni")
+errorToDunn <- gather(sourceDataGroups, "group", "errors", 5:8)
+dunn.test(errorToDunn$error,errorToDunn$group, kw=TRUE, method="bonferroni")
 ```
 
 
@@ -155,7 +149,7 @@ Below the data is summarized:
  describe(sourceDataTasks[2:5])
  describe(sourceDataTasks[6:9])
 
- ```
+```
 
 ### Plots
 
@@ -173,7 +167,7 @@ boxplot(sourceDataTasks[6:9],xlab="Tasks",ylab="Error",main="Error perfored in t
 First, we perform the Shapiro normality test. This test determine if the data is normally distributed. It is important to determine if the data is normally distributed to conduce posterior tests.
 
 ```{r shapiro 1}
-sapply(lapply(errorAndTimePerTask[1:8], shapiro.test), `[`, c("statistic","p.value"))
+sapply(lapply(sourceDataTasks[1:8], shapiro.test), `[`, c("statistic","p.value"))
 ```
 
 As we can see, the $p-value$ of most Shapiro tests reveled that the data are not normally distributed. Since in this test the comparisons are made with the same subjects and we are varying the tasks, the next step is to perform a Friedman analysis.
