@@ -1,5 +1,13 @@
 #To get user role changes
 
+
+qntusers <- 4
+if(qntusers == 1)
+  users <- select(X23.1.Task4.2016.06.10.18.37.57,ends_with(".1"), -starts_with("User"),-starts_with("Con")) #select only user action in object transformation 
+if(qntusers == 2)
+  users <- select(X22.2.Task4.2016.06.10.18.16.35,ends_with(".1"),ends_with(".2"), -starts_with("User"),-starts_with("Con")) #select only user action in object transformation 
+if(qntusers == 3)
+  users <- select(X18.3.Task4.2016.06.09.10.22.24,ends_with(".1"),ends_with(".2"), ends_with(".3"), -starts_with("User"),-starts_with("Con")) #select only user action in object transformation 
 if(qntusers == 4)
   users <- select(X25.4.Task4.2016.06.17.14.31.44,ends_with(".1"),ends_with(".2"), ends_with(".3"),ends_with(".4"), -starts_with("User"),-starts_with("Con")) #select only user action in object transformation 
 
@@ -45,45 +53,90 @@ if(qntusers == 4)
 tidyUsers <- head(tidyUsers,-1)
 
 if(qntusers == 1 | qntusers == 2 |qntusers == 3 | qntusers == 4){
-  tidyUsers$U1TransAsd<- lapply(tidyUsers$U1Trans, function(x) ifelse(x >0, 1, 0))
-  tidyUsers$U1RotAsd<- lapply(tidyUsers$U1Rot, function(x) ifelse(x >0, 2, 0))
-  tidyUsers$U1ScaleAsd<- lapply(tidyUsers$U1Scale, function(x) ifelse(x >0, 3, 0))
-  tidyUsers$U1CamAsd<- lapply(tidyUsers$U1Cam, function(x) ifelse(x >0, 4, 0))
+  tidyUsers$U1TransAsd<- lapply(tidyUsers$U1Trans, function(x) ifelse(x >0, 3, 0))
+  tidyUsers$U1RotAsd<- lapply(tidyUsers$U1Rot, function(x) ifelse(x >0, 5, 0))
+  tidyUsers$U1ScaleAsd<- lapply(tidyUsers$U1Scale, function(x) ifelse(x >0, 7, 0))
+  tidyUsers$U1CamAsd<- lapply(tidyUsers$U1Cam, function(x) ifelse(x >0, 11, 0))
 }
 
 if(qntusers == 2 |qntusers == 3 | qntusers == 4){
-  tidyUsers$U2TransAsd<- lapply(tidyUsers$U2Trans, function(x) ifelse(x >0, 1, 0))
-  tidyUsers$U2RotAsd<- lapply(tidyUsers$U2Rot, function(x) ifelse(x >0, 2, 0))
-  tidyUsers$U2ScaleAsd<- lapply(tidyUsers$U2Scale, function(x) ifelse(x >0, 3, 0))
-  tidyUsers$U2CamAsd<- lapply(tidyUsers$U2Cam, function(x) ifelse(x >0, 4, 0))
+  tidyUsers$U2TransAsd<- lapply(tidyUsers$U2Trans, function(x) ifelse(x >0, 3, 0))
+  tidyUsers$U2RotAsd<- lapply(tidyUsers$U2Rot, function(x) ifelse(x >0, 5, 0))
+  tidyUsers$U2ScaleAsd<- lapply(tidyUsers$U2Scale, function(x) ifelse(x >0, 7, 0))
+  tidyUsers$U2CamAsd<- lapply(tidyUsers$U2Cam, function(x) ifelse(x >0, 11, 0))
 }
 
 
 if(qntusers == 3 | qntusers == 4){
-  tidyUsers$U3TransAsd<- lapply(tidyUsers$U3Trans, function(x) ifelse(x >0, 1, 0))
-  tidyUsers$U3RotAsd<- lapply(tidyUsers$U3Rot, function(x) ifelse(x >0, 2, 0))
-  tidyUsers$U3ScaleAsd<- lapply(tidyUsers$U3Scale, function(x) ifelse(x >0, 3, 0))
-  tidyUsers$U3CamAsd<- lapply(tidyUsers$U3Cam, function(x) ifelse(x >0, 4, 0))
+  tidyUsers$U3TransAsd<- lapply(tidyUsers$U3Trans, function(x) ifelse(x >0, 3, 0))
+  tidyUsers$U3RotAsd<- lapply(tidyUsers$U3Rot, function(x) ifelse(x >0, 5, 0))
+  tidyUsers$U3ScaleAsd<- lapply(tidyUsers$U3Scale, function(x) ifelse(x >0, 7, 0))
+  tidyUsers$U3CamAsd<- lapply(tidyUsers$U3Cam, function(x) ifelse(x >0, 11, 0))
 }
 
 if(qntusers == 4){
-  tidyUsers$U4TransAsd<- lapply(tidyUsers$U4Trans, function(x) ifelse(x >0, 1, 0))
-  tidyUsers$U4RotAsd<- lapply(tidyUsers$U4Rot, function(x) ifelse(x >0, 2, 0))
-  tidyUsers$U4ScaleAsd<- lapply(tidyUsers$U4Scale, function(x) ifelse(x >0, 3, 0))
-  tidyUsers$U4CamAsd<- lapply(tidyUsers$U4Cam, function(x) ifelse(x >0, 4, 0))
+  tidyUsers$U4TransAsd<- lapply(tidyUsers$U4Trans, function(x) ifelse(x >0, 3, 0))
+  tidyUsers$U4RotAsd<- lapply(tidyUsers$U4Rot, function(x) ifelse(x >0, 5, 0))
+  tidyUsers$U4ScaleAsd<- lapply(tidyUsers$U4Scale, function(x) ifelse(x >0, 7, 0))
+  tidyUsers$U4CamAsd<- lapply(tidyUsers$U4Cam, function(x) ifelse(x >0, 11, 0))
 }
 
-if(qntusers == 1 | qntusers == 2 |qntusers == 3 | qntusers == 4)
-  user1 <- tidyUsers[17:20]
-if(qntusers == 2 |qntusers == 3 | qntusers == 4)
-  user1 <- tidyUsers[21:24]
-if(qntusers == 3 | qntusers == 4)
-  user1 <- tidyUsers[25:28]
-if(qntusers == 4)
-  user1 <- tidyUsers[29:32]
+if(qntusers == 1 | qntusers == 2 |qntusers == 3 | qntusers == 4){
+  user1 <- tidyUsers[c("U1TransAsd","U1RotAsd","U1ScaleAsd","U1CamAsd")]
+  asd2 <- apply(user1, 1, function(x) any(x) && x[as.logical(x)][1] >0)
+  user1 <- user1[asd2,]
+  U1 <- mutate(user1, SUM = as.numeric(U1RotAsd)+ as.numeric(U1TransAsd)+ as.numeric(U1ScaleAsd)+ as.numeric(U1CamAsd))  
+  U1 <- data.frame(t(U1$SUM))
+  U1$zero <- 0 # add zero in the end of the line
+  row.names(U1) <- "1"
+  write.table( U1, sep=" ",  col.names=FALSE,file = "AllUsersRolesRaw.csv",na = " ", append = TRUE)
+}
 
-asd2 <- apply(user1, 1, function(x) any(x) && x[as.logical(x)][1] >0)
-desired.result <- asd[asd2,]
-aaa <- mutate(desired.result, SUM = as.numeric(U1RotAsd)+ as.numeric(U1TransAsd)+ as.numeric(U1ScaleAsd)+ as.numeric(U1CamAsd))
+if(qntusers == 2 |qntusers == 3 | qntusers == 4)
+{
+  user2 <- tidyUsers[c("U2TransAsd","U2RotAsd","U2ScaleAsd","U2CamAsd")]
+  asd2 <- apply(user2, 1, function(x) any(x) && x[as.logical(x)][1] >0)
+  user2 <- user2[asd2,]
+  U2 <- mutate(user2, SUM = as.numeric(U2RotAsd)+ as.numeric(U2TransAsd)+ as.numeric(U2ScaleAsd)+ as.numeric(U2CamAsd))  
+  U2 <- data.frame(t(U2$SUM))
+  U2$zero <- 0 # add zero in the end of the line
+  row.names(U2) <- "2"
+  write.table( U2, sep=" ",  col.names=FALSE,file = "AllUsersRolesRaw.csv",na = " ", append = TRUE)
+}
+
+if(qntusers == 3 | qntusers == 4){
+  user3 <- tidyUsers[c("U3TransAsd","U3RotAsd","U3ScaleAsd","U3CamAsd")]
+  asd2 <- apply(user3, 1, function(x) any(x) && x[as.logical(x)][1] >0)
+  user3 <- user3[asd2,]
+  U3 <- mutate(user3, SUM = as.numeric(U3RotAsd)+ as.numeric(U3TransAsd)+ as.numeric(U3ScaleAsd)+ as.numeric(U3CamAsd))
+  U3 <- data.frame(t(U3$SUM))
+  U3$zero <- 0  # add zero in the end of the line
+  row.names(U3) <- "3"
+  write.table( U3, sep=" ",  col.names=FALSE,file = "AllUsersRolesRaw.csv",na = " ", append = TRUE)
+}
+
+if(qntusers == 4){
+  user4 <- tidyUsers[c("U4TransAsd","U4RotAsd","U4ScaleAsd","U4CamAsd")]
+  asd2 <- apply(user4, 1, function(x) any(x) && x[as.logical(x)][1] >0)
+  user4 <- user4[asd2,]
+  U4 <- mutate(user4, SUM = as.numeric(U4RotAsd)+ as.numeric(U4TransAsd)+ as.numeric(U4ScaleAsd)+ as.numeric(U4CamAsd))
+  U4 <- data.frame(t(U4$SUM))
+  U4$zero <- 0  # add zero in the end of the line
+  row.names(U4) <- "4"
+  write.table( U4, sep=" ",  col.names=FALSE,file = "AllUsersRolesRaw.csv",na = " ", append = TRUE)
+}
+
+# if(qntusers == 1)
+#   UALL <- bind_rows(U1)
+# if(qntusers == 2)
+#   UALL <- bind_rows(U1,U2)
+# if(qntusers == 3)
+#   UALL <- bind_rows(U1,U2,U3)
+# if(qntusers == 4)
+#   UALL <- bind_rows(U1,U2,U3,U4)
+
 
 #write.csv(t(aaa[5]),file = "aaa.csv")
+
+#write.csv(UALL,file = "aaa.csv")
+#write.table( UALL, sep=" ",  col.names=FALSE,file = "AllUsersRolesRaw.csv",na = " ")
