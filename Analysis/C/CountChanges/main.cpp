@@ -6,26 +6,41 @@ int main(){
     int considerChange = 4;
     int stillSameRole = 0;
     int input = -1;
-    int valueNow = 0;
+    int valueNow = -1;
     int countChanges = 0;
+    int member;
     int count = 0;
-    int toCompare[3];
-    while(input != 0){
-        cin >> input;
-
-        toCompare[count] = input;
-        count++;
-        if(count >= 3)
-                count = 0;
-
-            if(input != toCompare[2] && input == toCompare[1] && input == toCompare[0])
-            {
-             countChanges++;
-
+    int temp = -1;
+    while(member != 99){
+        cin >> member;
+        if(member == 99) break;
+        while(input != 0){
+            cin >> input;
+            if (input == 0){
+                input = -1; break;
             }
 
+            if(input != temp ){
+                temp = input;
+                count = 0;
+            }
+            else if(temp != valueNow)
+                count++;
+            else
+                count = 0;
+
+            if(count == considerChange-1){
+                valueNow = input;
+                countChanges++;
+            }
+
+        }
+        cout << "Changes by Member " << member << ": " << countChanges << endl;
+        countChanges = 0;
+        count = 0;
+        temp = -1;
     }
-    cout << "Changes: " << countChanges << endl;
+    cout << "END" << endl;
     return 0;
 
 }
