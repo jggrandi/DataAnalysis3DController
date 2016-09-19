@@ -55,11 +55,16 @@ describe(sourceDataGroups)
 And ploted:
 
 ```{r boxplot1}
-boxplot(sourceDataGroups[1:4],xlab="Team members",ylab="Time",main="Time X Groups")
-ggplot(timeToDunn, aes(x=group, y=errors)) + geom_boxplot()+labs(title="Group size vs. Task completion time",x="Group Size", y = "Time (seconds)")+theme_bw()+ scale_x_discrete(breaks=c("Time.T1", "Time.T2", "Time.T3", "Time.T4"),labels=c("1", "2", "3","4"))
+#boxplot(sourceDataGroups[1:4],xlab="Team members",ylab="Time",main="Time X Groups")
+time <- gather(sourceDataGroups, "group", "time", 1:4)
+ggplot(time, aes(x=group, y=time)) + geom_boxplot()+labs(title="Group size vs. Task completion time",x="Group Size", y = "Time (seconds)")+theme_bw()+ scale_x_discrete(breaks=c("Time.T1", "Time.T2", "Time.T3", "Time.T4"),labels=c("1", "2", "3","4"))
 
 #boxplot(sourceDataGroups[5:8],xlab="Team members",ylab="Error",main="Error X Groups")
-ggplot(errorToDunn, aes(x=group, y=errors)) + geom_boxplot()+labs(title="Group size vs. Task accuracy",x="Group Size", y = "Accuracy")+theme_bw()+ scale_x_discrete(breaks=c("Error.T1", "Error.T2", "Error.T3", "Error.T4"),labels=c("1", "2", "3","4"))
+error <- gather(sourceDataGroups, "group", "error", 5:8)
+ggplot(error, aes(x=group, y=errors)) + geom_boxplot()+labs(title="Group size vs. Task accuracy",x="Group Size", y = "Accuracy")+theme_bw()+ scale_x_discrete(breaks=c("Error.T1", "Error.T2", "Error.T3", "Error.T4"),labels=c("1", "2", "3","4"))
+
+variance <- gather(sourceDataGroups, "group", "variance", 9:12)
+ggplot(variance, aes(x=group, y=variance)) + geom_boxplot()+labs(title="Group size vs. Work Distribution Balance",x="Group Size", y = "Work Distribution (variance")+theme_bw()+ scale_x_discrete(breaks=c("Var.T1", "Var.T2", "Var.T3", "Var.T4"),labels=c("1", "2", "3","4"))
 
 ```
 
@@ -116,16 +121,29 @@ We perform the Kruskal test with Dunn posthoc with the time data:
 
 ```{r dunn1 posthoc}
 library(dunn.test)
-timeToDunn <- gather(sourceDataGroups, "group", "errors", 1:4)
-dunn.test(timeToDunn$error,timeToDunn$group, kw=TRUE, method="holm")
+dunn.test(error$error,error$group, kw=TRUE, method="holm")
 ```
 
 ... and with the error data:
 
 ```{r dunn2 posthoc}
-errorToDunn <- gather(sourceDataGroups, "group", "errors", 5:8)
-dunn.test(errorToDunn$error,errorToDunn$group, kw=TRUE, method="holm")
+dunn.test(time$time,variance$group, kw=TRUE, method="holm")
 ```
+
+... and with the work distribution balance
+
+```{r dunn3 posthoc}
+dunn.test(variance$variance,variance$group, kw=TRUE, method="holm")
+```
+
+Excluding the first group size of the comparisons
+
+```{r dunn3 posthoc}
+variance2 <- gather(sourceDataGroups, "group", "variance2", 10:12)
+dunn.test(variance2$variance2,variance2$group, kw=TRUE, method="holm")
+```
+
+
 
 
 # Comparison between tasks
