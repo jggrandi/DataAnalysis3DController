@@ -13,6 +13,7 @@ library(corrgram)
 library(Hmisc)
 library(tidyr)
 library(dunn.test)
+library(ggplot2)
 ```
 
 ``` {r dir,echo=FALSE}
@@ -39,10 +40,13 @@ This is a on going analysis of the data collected in the user experiment perform
 ## Data Summary
 
 ``` {r load}
-sourceDataGroups <- read.csv("errorTimeAndVarPerTeam.csv",header = TRUE,  sep=";", dec = ",")
+#sourceDataGroups <- read.csv("errorTimeAndVarPerTeam.csv",header = TRUE,  sep=";", dec = ",")
+#sourceDataGroups <- read.csv("errorTimeAndVarPerTeamOnlyTask3and4.csv",header = TRUE,  sep="\t")
+sourceDataGroups <- read.csv("errorMedianAndTimePerTeamOnlyTask3and4.csv",header = TRUE,  sep="\t")
 sourceDataGroups
 
-sourceDataTasks <- read.csv("errorAndTimePerTask.csv",header = TRUE,  sep=";")
+#sourceDataTasks <- read.csv("errorAndTimePerTask.csv",header = TRUE,  sep="\t")
+sourceDataTasks <- read.csv("errorMedianAndTimePerTaskOnlyTask3and4.csv",header = TRUE,  sep="\t")
 sourceDataTasks
 ```
    
@@ -61,7 +65,7 @@ ggplot(time, aes(x=group, y=time)) + geom_boxplot()+labs(title="Group size vs. T
 
 #boxplot(sourceDataGroups[5:8],xlab="Team members",ylab="Error",main="Error X Groups")
 error <- gather(sourceDataGroups, "group", "error", 5:8)
-ggplot(error, aes(x=group, y=errors)) + geom_boxplot()+labs(title="Group size vs. Task accuracy",x="Group Size", y = "Accuracy")+theme_bw()+ scale_x_discrete(breaks=c("Error.T1", "Error.T2", "Error.T3", "Error.T4"),labels=c("1", "2", "3","4"))
+ggplot(error, aes(x=group, y=error)) + geom_boxplot()+labs(title="Group size vs. Task accuracy",x="Group Size", y = "Accuracy")+theme_bw()+ scale_x_discrete(breaks=c("Error.T1", "Error.T2", "Error.T3", "Error.T4"),labels=c("1", "2", "3","4"))
 
 variance <- gather(sourceDataGroups, "group", "variance", 9:12)
 ggplot(variance, aes(x=group, y=variance)) + geom_boxplot()+labs(title="Group size vs. Work Distribution Balance",x="Group Size", y = "Work Distribution (variance")+theme_bw()+ scale_x_discrete(breaks=c("Var.T1", "Var.T2", "Var.T3", "Var.T4"),labels=c("1", "2", "3","4"))
@@ -75,8 +79,10 @@ The Pearson product-moment correlation coefficient is a measure of the linear co
 First we need to take the average of time and error of each team:
 
 ```{r corr}
-sourceDataTasks$MeanTime <- rowMeans(subset(sourceDataTasks, select = c(2,3,4,5)), na.rm = TRUE)
-sourceDataTasks$MeanError <- rowMeans(subset(sourceDataTasks, select = c(6,7,8,9)), na.rm = TRUE)
+#sourceDataTasks$MeanTime <- rowMeans(subset(sourceDataTasks, select = c(2,3,4,5)), na.rm = TRUE)
+#sourceDataTasks$MeanError <- rowMeans(subset(sourceDataTasks, select = c(6,7,8,9)), na.rm = TRUE)
+sourceDataTasks$MeanTime <- rowMeans(subset(sourceDataTasks, select = c(2,3)), na.rm = TRUE)
+sourceDataTasks$MeanError <- rowMeans(subset(sourceDataTasks, select = c(4,5)), na.rm = TRUE)
 ```
 
 Now we can make the pearson correlation analysis. It will tell us if there is a correlation between team members and time to solve the tasks, and team members and errors performed during the tasks.
@@ -84,7 +90,8 @@ Now we can make the pearson correlation analysis. It will tell us if there is a 
 First, the team members vs. time:
 
 ```{r corr2}
-teamTimeCorr <- sourceDataTasks[,c(1,10)]
+#teamTimeCorr <- sourceDataTasks[,c(1,10)]
+teamTimeCorr <- sourceDataTasks[,c(1,7)]
 teamTimeCorr <- rcorr(as.matrix(teamTimeCorr))
 teamTimeCorr
 ```
@@ -92,7 +99,8 @@ teamTimeCorr
 Team members vs. error:
 
 ```{r corr3}
-teamErrorCorr <- sourceDataTasks[,c(1,11)]
+#teamErrorCorr <- sourceDataTasks[,c(1,11)]
+teamErrorCorr <- sourceDataTasks[,c(1,8)]
 teamErrorCorr <- rcorr(as.matrix(teamErrorCorr))
 teamErrorCorr
 ```
@@ -178,8 +186,8 @@ Below the data is summarized:
 Time of task completion vs. Task for all combinations of teams:
 The code used to generate the charts is:
 ```{r boxplot}
-boxplot(sourceDataTasks[2:5],xlab="Tasks",ylab="Time",main="Time to complete the tasks")
-boxplot(sourceDataTasks[6:9],xlab="Tasks",ylab="Error",main="Error perfored in the tasks")
+boxplot(sourceDataTasks[4:5],xlab="Tasks",ylab="Time",main="Time to complete the tasks")
+boxplot(sourceDataTasks[8:9],xlab="Tasks",ylab="Error",main="Error perfored in the tasks")
 
 ```
 
@@ -189,21 +197,27 @@ boxplot(sourceDataTasks[6:9],xlab="Tasks",ylab="Error",main="Error perfored in t
 First, we perform the Shapiro normality test. This test determine if the data is normally distributed. It is important to determine if the data is normally distributed to conduce posterior tests.
 
 ```{r shapiro 1}
-sapply(lapply(sourceDataTasks[1:8], shapiro.test), `[`, c("statistic","p.value"))
+sapply(lapply(sourceDataTasks[2:5], shapiro.test), `[`, c("statistic","p.value"))
 ```
 
 As we can see, the $p-value$ of most Shapiro tests reveled that the data are not normally distributed. Since in this test the comparisons are made with the same subjects and we are varying the tasks, the next step is to perform a Friedman analysis.
 
-### Friedman
+### Analysis of learning between tasks 3 and 4 (Wilcoxon signed rank test)
 
-Friedman test is a non-parametric randomized block analysis of variance. Which is to say it is a non-parametric version of a one way ANOVA with repeated measures. That means that while a simple ANOVA test requires the assumptions of a normal distribution and equal variances (of the residuals), the Friedman test is free from those restriction. The price of this parametric freedom is the loss of power (of Friedman's test compared to the parametric ANOVa versions).
+<!-- ### Friedman -->
+
+<!-- Friedman test is a non-parametric randomized block analysis of variance. Which is to say it is a non-parametric version of a one way ANOVA with repeated measures. That means that while a simple ANOVA test requires the assumptions of a normal distribution and equal variances (of the residuals), the Friedman test is free from those restriction. The price of this parametric freedom is the loss of power (of Friedman's test compared to the parametric ANOVa versions). -->
 
 The hypotheses for the comparison across repeated measures are:
 
 * H0: The distributions (whatever they are) are the same across repeated measures
 * H1: The distributions across repeated measures are different
 
-The test statistic for the Friedman's test is a Chi-square with [(number of repeated measures)-1] degrees of freedom. A detailed explanation of the method for computing the Friedman test is available on Wikipedia.
+```{r wilcox}
+wilcox.test(sourceDataTasks$Time.task.3,sourceDataTasks$Time.task.4,paired=TRUE)
+wilcox.test(sourceDataTasks$Error.task.3,sourceDataTasks$Error.task.4,paired=TRUE)
+```
+<!-- The test statistic for the Friedman's test is a Chi-square with [(number of repeated measures)-1] degrees of freedom. A detailed explanation of the method for computing the Friedman test is available on Wikipedia. 
 
 ```{r fig.width=200,echo=FALSE}
 library(png)
@@ -216,6 +230,7 @@ grid.raster(img)
 img <- readPNG("../../Results/friedman_ErroXTarefa.png")
 grid.raster(img)
 ```
+
 
 ## Analysis of learning between tasks 3 and 4
 
@@ -232,6 +247,9 @@ grid.raster(img)
 img <- readPNG("../../Results/fiedman_tasks3and4_time.png")
 grid.raster(img)
 ```
+
+
+
 ## Analysis Correlation between Errors and Work division
 
 ```{r fig.width=200,echo=FALSE}
@@ -243,12 +261,30 @@ grid.raster(img)
 img <- readPNG("../../Results/Regressao_Error_DistTrabalho.png")
 grid.raster(img)
 ```
-
+-->
 
 ## Analysis of user role change 
 
 ### Correlation between Groups and user role change
 
+```{r roles}
+sourceDataRoles <- read.csv("rolesPerTeam.csv",header = TRUE,  sep="\t")
+sourceDataRoles
+sourceGroupsErrorRoles <- read.csv("members_error_roles.csv",header = TRUE,  sep="\t")
+sourceGroupsErrorRoles
+
+rolesGroups <- gather(sourceDataRoles, "group", "roles", 1:4)
+ggplot(rolesGroups, aes(x=group, y=roles)) + geom_boxplot()+labs(title="Group size vs. Team members roles",x="Group Size", y = "Roles")+theme_bw()+ scale_x_discrete(breaks=c("team1", "team2", "team3", "team4"),labels=c("1", "2", "3","4"))
+dunn.test(rolesGroups$roles,rolesGroups$group, kw=TRUE, method="holm")
+#rolesError
+
+cor.test(sourceGroupsErrorRoles$error,sourceGroupsErrorRoles$roles, alternative = "greater")
+pairs(sourceGroupsErrorRoles)
+lm_out <- lm(error~roles, data=sourceGroupsErrorRoles)
+plot(error~roles, data=sourceGroupsErrorRoles)
+abline(lm_out, col="red")
+```
+<!--
 ```{r fig.width=200,echo=FALSE}
 img <- readPNG("../../Results/Correlation_Group_Roles.png")
 grid.raster(img)
@@ -261,6 +297,8 @@ grid.raster(img)
 
 
 ### Variance Analysis (Kruskal) between Groups and user role change
+
+
 
 ```{r fig.width=200,echo=FALSE}
 img <- readPNG("../../Results/Kruskal_Group_Roles.png")
@@ -279,7 +317,7 @@ img <- readPNG("../../Results/Regressao_Error_Roles.png")
 grid.raster(img)
 ```
 
-
+-->
 
 
 <!-- # ### Kruskal-Wallis -->
