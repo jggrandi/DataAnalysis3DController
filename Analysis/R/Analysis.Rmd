@@ -2,7 +2,7 @@
 title: "Collaborative 3DUI Data Analysis"
 author: "Jerônimo G. Grandi"
 date: "August 22, 2016"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -42,7 +42,7 @@ This is a on going analysis of the data collected in the user experiment perform
 ``` {r load}
 #sourceDataGroups <- read.csv("errorTimeAndVarPerTeam.csv",header = TRUE,  sep=";", dec = ",")
 #sourceDataGroups <- read.csv("errorTimeAndVarPerTeamOnlyTask3and4.csv",header = TRUE,  sep="\t")
-sourceDataGroups <- read.csv("errorMedianAndTimePerTeamOnlyTask3and4.csv",header = TRUE,  sep="\t")
+sourceDataGroups <- read.csv("errorMedianAndTimePerTeamOnlyTask3and4.csv", header = FALSE,  sep=";")
 sourceDataGroups
 
 #sourceDataTasks <- read.csv("errorAndTimePerTask.csv",header = TRUE,  sep="\t")
@@ -135,7 +135,7 @@ dunn.test(error$error,error$group, kw=TRUE, method="holm")
 ... and with the error data:
 
 ```{r dunn2 posthoc}
-dunn.test(time$time,variance$group, kw=TRUE, method="holm")
+dunn.test(time$time,time$group, kw=TRUE, method="holm")
 ```
 
 ... and with the work distribution balance
@@ -268,20 +268,26 @@ grid.raster(img)
 ### Correlation between Groups and user role change
 
 ```{r roles}
-sourceDataRoles <- read.csv("rolesPerTeam.csv",header = TRUE,  sep="\t")
+#sourceDataRoles <- read.csv("rolesPerTeam.csv",header = FALSE,  sep=";") #it is not working, but groupsRoles.csv works.. whyyy??? 
+sourceDataRoles <- read.csv("groupsRoles.csv",header = FALSE,  sep="\t") 
 sourceDataRoles
-sourceGroupsErrorRoles <- read.csv("members_error_roles.csv",header = TRUE,  sep="\t")
+sourceGroupsErrorRoles <- read.csv("members_error_roles.csv",header = FALSE,  sep=";")
 sourceGroupsErrorRoles
 
-rolesGroups <- gather(sourceDataRoles, "group", "roles", 1:4)
-ggplot(rolesGroups, aes(x=group, y=roles)) + geom_boxplot()+labs(title="Group size vs. Team members roles",x="Group Size", y = "Roles")+theme_bw()+ scale_x_discrete(breaks=c("team1", "team2", "team3", "team4"),labels=c("1", "2", "3","4"))
-dunn.test(rolesGroups$roles,rolesGroups$group, kw=TRUE, method="holm")
-#rolesError
 
-cor.test(sourceGroupsErrorRoles$error,sourceGroupsErrorRoles$roles, alternative = "greater")
+#rolesGroups <- gather(sourceDataRoles, "group", "roles", 1:4)
+#rolesGroups <- rolesGroups[complete.cases(rolesGroups),]
+#ggplot(rolesGroups, aes(x=group, y=roles)) + geom_boxplot()+labs(title="Group size vs. Team members roles",x="Group Size", y = "Roles")+theme_bw()+ scale_x_discrete(breaks=c("team1", "team2", "team3", "team4"),labels=c("1", "2", "3","4"))
+#dunn.test(rolesGroups$roles,rolesGroups$group, kw = TRUE, method="holm")
+
+ggplot(sourceDataRoles, aes(x=as.character(V1), y=V2)) + geom_boxplot()+labs(title="Group size vs. Team members roles",x="Group Size", y = "Roles")+theme_bw()
+dunn.test(sourceDataRoles$V2,sourceDataRoles$V1, kw = TRUE, method="holm")
+
+
+cor.test(sourceGroupsErrorRoles$V2,sourceGroupsErrorRoles$V3, alternative = "greater")
 pairs(sourceGroupsErrorRoles)
-lm_out <- lm(error~roles, data=sourceGroupsErrorRoles)
-plot(error~roles, data=sourceGroupsErrorRoles)
+lm_out <- lm(V2~V3, data=sourceGroupsErrorRoles)
+plot(V2~V3, data=sourceGroupsErrorRoles)
 abline(lm_out, col="red")
 ```
 <!--
