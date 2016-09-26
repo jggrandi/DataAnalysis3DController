@@ -1,8 +1,13 @@
 ---
-title: "Collaborative 3DUI Data Analysis"
+title: "Data Analysis of the Paper Design and Evaluation of a Handheld-based 3D User Interface for Collaborative Object Manipulation "
 author: "Jerônimo G. Grandi"
-date: "August 22, 2016"
-output: html_document
+date: "September 26, 2016"
+output:
+  pdf_document: 
+    number_sections: yes
+    toc: yes
+  html_document:
+    theme: journal
 ---
 
 ```{r setup, include=FALSE}
@@ -24,17 +29,29 @@ setwd("/home/jeronimo/Documents/DataAnalysis3DController/Analysis/R")
 
 # Data analyisis
 
-This is a on going analysis of the data collected in the user experiment performed.... 
+This is the analysis of the data collected in the user experiment performed for the ACM CHI Conference on Human Factors in Computing Systems
 
-# Comparisons between groups
+# Design and Procedure
+We aim to investigate the relationship between group sizes and the time and accuracy to complete the tasks. Furthermore, we intend to understand the influence of work distribution balance and work division in the performance of each group combination. Thus, the experiment follows a between subject design with Group size as the only independent variable, with one, two, three or four participants. Dependent variables collected were time to complete the task and accuracy of thegroup, and transformation actions (translation, rotation, scale or camera rotation), including duration and magnitude of the action performed by each individual subject. The accuracy is measured as described before in Section Collaborative 3D Manipulation Assessment.
 
-##Hypotesis
+##Task
+We used the obstacle crossing game with three wall configurations. The training sessions consist of the first two walls.
+The test session is formed by one trial for each practice wall and two trials for the tunnel. 
 
-* Groups with more than one member perform the tasks with less errors.
-* Groups with two and three members perform the tasks with less errors than with one and four.
-* Groups with more than one member perform the tasks faster.
-* Groups with two and three members perform the tasks faster than with one and four.
-* Task one and two are easier than three and four.
+The results reported here only use the two trials in the tunnel task for the statistical analysis.
+
+## Subjects
+Sixty subjects participated voluntarily in this experiment (nine female), aged 24 years in average (SD=3.6). They were all Computer Science students with no movement restrictions on wrists and arms. Thirteen of the individuals had never used gestural interactions with Kinect, Wiimote or mobile devices. We arranged the participants in 5 groups of one, 7 groups of
+two, 7 groups of three and 5 groups of four individuals.
+
+## Hypotesis
+
+* H1. Groups with more than one member complete the tasks faster  
+* H2. Groups with more than one member complete the tasks with more accuracy  
+* H3. For the tested group size range, if groups increase in members, the time to complete tasks drops proportionally  
+* H4. For the tested group size range, if groups increase in members, the accuracy to complete tasks increase proportionally  
+
+# Statistical Analysis Results
 
 
 ## Data Summary
@@ -59,19 +76,18 @@ Below the data is summarized:
 And ploted:
 
 ```{r boxplot1}
-#boxplot(sourceDataGroups[1:4],xlab="Team members",ylab="Time",main="Time X Groups")
 time <- gather(sourceDataGroups, "group", "time", 1:4)
+
 ggplot(time, aes(x=group, y=time)) + geom_boxplot()+labs(x="Group Size", y = "Time (seconds)")+theme_bw()+ scale_x_discrete(breaks=c("V1", "V2", "V3", "V4"),labels=c("1", "2", "3","4"))+ scale_y_continuous(limits = c(0, 300), expand = c(0, 0),breaks = c(0,50,100,150,200,250,300))
 
 #boxplot(sourceDataGroups[5:8],xlab="Team members",ylab="Error",main="Error X Groups")
 error <- gather(sourceDataGroups, "group", "error", 5:8)
 ggplot(error, aes(x=group, y=error)) + geom_boxplot()+labs(x="Group Size", y = "Accuracy")+theme_bw()+ scale_x_discrete(breaks=c("V5", "V6", "V7", "V8"),labels=c("1", "2", "3","4"))+ scale_y_continuous(limits = c(0, 12), expand = c(0, 0),breaks = c(0,2,4,6,8,10,12))
 
-variance <- gather(sourceDataGroups, "group", "variance", 9:12)
-ggplot(variance, aes(x=group, y=variance)) + geom_boxplot()+labs(title="Group size vs. Work Distribution Balance",x="Group Size", y = "Work Distribution (variance")+theme_bw()+ scale_x_discrete(breaks=c("Var.T1", "Var.T2", "Var.T3", "Var.T4"),labels=c("1", "2", "3","4"))
+#variance <- gather(sourceDataGroups, "group", "variance", 9:12)
+#ggplot(variance, aes(x=group, y=variance)) + geom_boxplot()+labs(title="Group size vs. Work Distribution Balance",x="Group Size", y = "Work Distribution (variance")+theme_bw()+ scale_x_discrete(breaks=c("Var.T1", "Var.T2", "Var.T3", "Var.T4"),labels=c("1", "2", "3","4"))
 
 ```
-
 ### Correlation Analysis
 
 The Pearson product-moment correlation coefficient is a measure of the linear correlation between two variables X and Y, giving a value between +1 and -1 inclusive, where 1 is total positive correlation, 0 is no correlation, and -1 is total negative correlation. It is widely used in the sciences as a measure of the degree of linear dependence between two variables. 
@@ -91,7 +107,7 @@ First, the team members vs. time:
 
 ```{r corr2}
 #teamTimeCorr <- sourceDataTasks[,c(1,10)]
-teamTimeCorr <- sourceDataTasks[,c(1,7)]
+teamTimeCorr <- sourceDataTasks[,c(1,6)]
 teamTimeCorr <- rcorr(as.matrix(teamTimeCorr))
 teamTimeCorr
 ```
@@ -100,7 +116,7 @@ Team members vs. error:
 
 ```{r corr3}
 #teamErrorCorr <- sourceDataTasks[,c(1,11)]
-teamErrorCorr <- sourceDataTasks[,c(1,8)]
+teamErrorCorr <- sourceDataTasks[,c(1,7)]
 teamErrorCorr <- rcorr(as.matrix(teamErrorCorr))
 teamErrorCorr
 ```
@@ -140,16 +156,16 @@ dunn.test(time$time,time$group, kw=TRUE, method="holm")
 
 ... and with the work distribution balance
 
-```{r dunn3 posthoc}
-dunn.test(variance$variance,variance$group, kw=TRUE, method="holm")
-```
+#```{r dunn3 posthoc}
+#dunn.test(variance$variance,variance$group, kw=TRUE, method="holm")
+#```
 
 Excluding the first group size of the comparisons
 
-```{r dunn4 posthoc}
-variance2 <- gather(sourceDataGroups, "group", "variance2", 10:12)
-dunn.test(variance2$variance2,variance2$group, kw=TRUE, method="holm")
-```
+#```{r dunn4 posthoc}
+#variance2 <- gather(sourceDataGroups, "group", "variance2", 10:12)
+#dunn.test(variance2$variance2,variance2$group, kw=TRUE, method="holm")
+#```
 
 
 
@@ -496,6 +512,7 @@ grid.raster(img)
 <!-- # img <- readPNG("../../Results/Regressao_Error_DistTrabalho.png")  -->
 <!-- # grid.raster(img) -->
 <!-- # ``` -->
+
 
 
 
