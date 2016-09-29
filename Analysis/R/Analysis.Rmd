@@ -59,19 +59,20 @@ two, 7 groups of three and 5 groups of four individuals.
 ``` {r load}
 #sourceDataGroups <- read.csv("errorTimeAndVarPerTeam.csv",header = TRUE,  sep=";", dec = ",")
 #sourceDataGroups <- read.csv("errorTimeAndVarPerTeamOnlyTask3and4.csv",header = TRUE,  sep="\t")
-sourceDataGroups <- read.csv("errorMedianAndTimePerTeamOnlyTask3and4.csv", header = FALSE,  sep=";")
+sourceDataGroups <- read.csv("errorMedianAndTimePerTeamOnlyTask3and4.csv", header = FALSE,  sep="\t")
 sourceDataGroups
 
 #sourceDataTasks <- read.csv("errorAndTimePerTask.csv",header = TRUE,  sep="\t")
 sourceDataTasks <- read.csv("errorMedianAndTimePerTaskOnlyTask3and4.csv",header = TRUE,  sep="\t")
 sourceDataTasks
 ```
-   
-Below the data is summarized:   
 
-```{r summary}
-#describe(sourceDataGroups)
-```
+<!-- Below the data is summarized:    -->
+
+<!-- ```{r summary} -->
+<!-- #describe(sourceDataGroups) -->
+<!-- describe(sourceDataGroups) -->
+<!-- ``` -->
    
 And ploted:
 
@@ -128,10 +129,26 @@ Before we conduce a variance test on the data to evaluate if more or less member
 
 ```{r shapiro1}
 sapply(lapply(sourceDataGroups[1:8], shapiro.test), `[`, c("statistic","p.value"))
+qqnorm(sourceDataGroups$V1)
+qqline(sourceDataGroups$V1)
+qqnorm(sourceDataGroups$V2)
+qqline(sourceDataGroups$V2)
+qqnorm(sourceDataGroups$V3)
+qqline(sourceDataGroups$V3)
+qqnorm(sourceDataGroups$V4)
+qqline(sourceDataGroups$V4)
+qqnorm(sourceDataGroups$V5)
+qqline(sourceDataGroups$V5)
+qqnorm(sourceDataGroups$V6)
+qqline(sourceDataGroups$V6)
+qqnorm(sourceDataGroups$V7)
+qqline(sourceDataGroups$V7)
+qqnorm(sourceDataGroups$V8)
+qqline(sourceDataGroups$V8)
 
 ```
 
-As the P < 0.05 of most tests, we know that our data are not normally distributed. For this case, and because we are comparing distinct groups, the variance test will be performed by a Kruskal-Wallis. 
+
 
 ### Kruskal-Wallis
 
@@ -154,13 +171,13 @@ dunn.test(error$error,error$group, kw=TRUE, method="holm")
 dunn.test(time$time,time$group, kw=TRUE, method="holm")
 ```
 
-... and with the work distribution balance
+<!-- ... and with the work distribution balance -->
 
 #```{r dunn3 posthoc}
 #dunn.test(variance$variance,variance$group, kw=TRUE, method="holm")
 #```
 
-Excluding the first group size of the comparisons
+<!-- Excluding the first group size of the comparisons -->
 
 #```{r dunn4 posthoc}
 #variance2 <- gather(sourceDataGroups, "group", "variance2", 10:12)
@@ -192,8 +209,8 @@ The data is arranged by Task vs. Team members. Collumns are organized as follows
 Below the data is summarized:
 
 ```{r dataAverage}
- describe(sourceDataTasks[2:5])
- describe(sourceDataTasks[6:9])
+ describe(sourceDataTasks[2:3])
+ describe(sourceDataTasks[4:5])
 
 ```
 
@@ -202,8 +219,8 @@ Below the data is summarized:
 Time of task completion vs. Task for all combinations of teams:
 The code used to generate the charts is:
 ```{r boxplot}
-boxplot(sourceDataTasks[4:5],xlab="Tasks",ylab="Time",main="Time to complete the tasks")
-boxplot(sourceDataTasks[8:9],xlab="Tasks",ylab="Error",main="Error perfored in the tasks")
+boxplot(sourceDataTasks[2:3],xlab="Tasks",ylab="Time",main="Time to complete the tasks")
+boxplot(sourceDataTasks[4:5],xlab="Tasks",ylab="Error",main="Error perfored in the tasks")
 
 ```
 
@@ -242,51 +259,7 @@ summary(tasksError)
 tasksError <- gather(sourceDataTasks, "task", "error", 4:5)
 ggplot(tasksError, aes(x=as.character(task), y=error)) + geom_boxplot()+labs(x="Tasks", y = "Error")+theme_bw()+scale_x_discrete(breaks=c("Error.task.3", "Error.task.4"),labels=c("First Trial", "Second Trial"))+ scale_y_continuous(limits = c(0, 9), expand = c(0, 0),breaks = c(0,1.5,3,4.5,6,7.5,9))
 
-<!-- The test statistic for the Friedman's test is a Chi-square with [(number of repeated measures)-1] degrees of freedom. A detailed explanation of the method for computing the Friedman test is available on Wikipedia. 
 
-```{r fig.width=200,echo=FALSE}
-library(png)
-library(grid)
-img <- readPNG("../../Results/friedman_TempoXTarefa.png")
-grid.raster(img)
-```
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/friedman_ErroXTarefa.png")
-grid.raster(img)
-```
-
-
-## Analysis of learning between tasks 3 and 4
-
-As the data is not normally distributed and the comparison is between tasks (instead of groups) we performed a Friedman analysis.
-
-
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/fiedman_tasks3and4_error.png")
-grid.raster(img)
-```
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/fiedman_tasks3and4_time.png")
-grid.raster(img)
-```
-
-
-
-## Analysis Correlation between Errors and Work division
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/Correlacao_Error_DistribuicaoDeTrabalho.png")
-grid.raster(img)
-```
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/Regressao_Error_DistTrabalho.png")
-grid.raster(img)
-```
--->
 
 ## Analysis of user role change 
 
@@ -317,204 +290,4 @@ cor.test(sourceGroupsErrorRoles$V2,sourceGroupsErrorRoles$V3, alternative = "gre
 pairs(sourceGroupsErrorRoles)
 lm_out <- lm(V2~V3, data=sourceGroupsErrorRoles)
 ggplot(sourceGroupsErrorRoles, aes(x=V3, y=V2)) + geom_point(shape=1) + geom_smooth(method=lm) +labs(title="Accuracy vs. User roles change",x="Role changes", y = "Error")+theme_bw()+ scale_x_continuous(limits = c(0, 50), expand = c(0, 0),breaks = c(0,5,10,15,20,25,30,35,40,45,50))+scale_y_continuous(limits = c(0, 10),expand = c(0, 0),breaks = c(0,2,4,6,8,10))
-
-
-
-
-#ggplot(V2~V3, data=sourceGroupsErrorRoles)
-#abline(lm_out, col="red")
-```
-<!--
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/Correlation_Group_Roles.png")
-grid.raster(img)
-```
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/Regressao_Group_Roles.png")
-grid.raster(img)
-```
-
-
-### Variance Analysis (Kruskal) between Groups and user role change
-
-
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/Kruskal_Group_Roles.png")
-grid.raster(img)
-```
-
-### Correlation between Groups, errors and roles
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/Correlation_Group__Error_Roles.png")
-grid.raster(img)
-```
-
-```{r fig.width=200,echo=FALSE}
-img <- readPNG("../../Results/Regressao_Error_Roles.png")
-grid.raster(img)
-```
-
--->
-
-
-<!-- # ### Kruskal-Wallis -->
-<!-- #  -->
-<!-- # A collection of data samples are independent if they come from unrelated populations and the samples do not affect each other. Using the Kruskal-Wallis Test, we can decide whether the population distributions are identical without assuming them to follow the normal distribution. -->
-<!-- #  -->
-<!-- #  -->
-<!-- # ```{r fig.width=100,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/ErroXQntPessoas.png") -->
-<!-- #  grid.raster(img) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ```{r fig.width=100,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/ErroPerCheckpointXGrupos.png") -->
-<!-- #  grid.raster(img) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ```{r fig.width=100,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/kruskal_posHoc_Student.png") -->
-<!-- #  grid.raster(img) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # # Comparisons between tasks -->
-<!-- #  -->
-<!-- # ## Hypotesis -->
-<!-- #  -->
-<!-- # * Task 1 and 2 are easier than 3 and 4; -->
-<!-- # * Task 4 is performed better than task 3 -->
-<!-- #  -->
-<!-- #  -->
-<!-- # ## Summary -->
-<!-- # First we set the environment, load and show the raw data.   -->
-<!-- #   -->
-<!-- # ``` {r raw} -->
-<!-- # setwd("/home/jeronimo/Documents/DataAnalysis3DController/Analysis/R") -->
-<!-- # dAvgPerTask <- read.csv("SummaryToR.csv") -->
-<!-- # dAvgPerTask -->
-<!-- # ``` -->
-<!-- # The data is arranged by Task vs. Team members. Collumns are organized as follows:    -->
-<!-- #  -->
-<!-- # * Members: Number of users in the team;    -->
-<!-- # * T1, T2, T3, T4: Time to complete task 1 to 4;     -->
-<!-- # * E1, E2, E3, E4: Errors in task 1 to 4.  -->
-<!-- #  -->
-<!-- # We split the data for better manipulation: -->
-<!-- #  -->
-<!-- # ```{r} -->
-<!-- # dAvgTime <- subset(dAvgPerTask, select = c(2,3,4,5)) -->
-<!-- # dAvgError <- subset(dAvgPerTask, select = c(6,7,8,9)) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # Below the data is summarized: -->
-<!-- #  -->
-<!-- # ```{r dataAverage} -->
-<!-- # describe(dAvgTime) -->
-<!-- # describe(dAvgError) -->
-<!-- #  -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ### Plots -->
-<!-- #  -->
-<!-- # Time of task completion vs. Task for all combinations of teams: -->
-<!-- # The code used to generate the charts is: -->
-<!-- #  -->
-<!-- # ```{r boxplot} -->
-<!-- # boxplot(dAvgTime,xlab="Tasks",ylab="Time",main="Time to complete the tasks") -->
-<!-- # boxplot(dAvgError,xlab="Tasks",ylab="Error",main="Error perfored in the tasks") -->
-<!-- #  -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ## Analysis of time of completion per task -->
-<!-- #  -->
-<!-- # ### Shapiro -->
-<!-- # First, we perform the Shapiro normality test. This test determine if the data is normally distributed. It is important to determine if the data is normally distributed to conduce posterior tests. -->
-<!-- #  -->
-<!-- # ```{r shapiro 1} -->
-<!-- # shap_dT <- lapply(dAvgTime, shapiro.test) -->
-<!-- # shap_dE <- lapply(dAvgError, shapiro.test) -->
-<!-- # res_shap_dT <- sapply(shap_dT, `[`, c("statistic","p.value")) -->
-<!-- # res_shap_dE <- sapply(shap_dE, `[`, c("statistic","p.value")) -->
-<!-- #  -->
-<!-- # res_shap_dT -->
-<!-- # res_shap_dE -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # As we can see, the $p-value$ of most Shapiro tests reveled that the data are not normally distributed. Since in this test the comparisons are made with the same subjects and we are varying the tasks, the next step is to perform a Friedman analysis. -->
-<!-- #  -->
-<!-- # ### Friedman -->
-<!-- #  -->
-<!-- # Friedman test is a non-parametric randomized block analysis of variance. Which is to say it is a non-parametric version of a one way ANOVA with repeated measures. That means that while a simple ANOVA test requires the assumptions of a normal distribution and equal variances (of the residuals), the Friedman test is free from those restriction. The price of this parametric freedom is the loss of power (of Friedman's test compared to the parametric ANOVa versions). -->
-<!-- #  -->
-<!-- # The hypotheses for the comparison across repeated measures are:    -->
-<!-- #  -->
-<!-- # * H0: The distributions (whatever they are) are the same across repeated measures    -->
-<!-- # * H1: The distributions across repeated measures are different    -->
-<!-- #  -->
-<!-- # The test statistic for the Friedman's test is a Chi-square with [(number of repeated measures)-1] degrees of freedom. A detailed explanation of the method for computing the Friedman test is available on Wikipedia. -->
-<!-- #  -->
-<!-- # ```{r fig.width=200,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/friedman_TempoXTarefa.png") -->
-<!-- # grid.raster(img) -->
-<!-- # ``` -->
-<!-- # ```{r fig.width=200,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/friedman_ErroXTarefa.png")  -->
-<!-- # grid.raster(img) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ## Analysis of learning between tasks 3 and 4 -->
-<!-- #  -->
-<!-- # As the data is not normally distributed and the comparison is between tasks (instead of groups) we performed a Friedman analysis. -->
-<!-- #  -->
-<!-- #  -->
-<!-- #  -->
-<!-- # ```{r fig.width=200,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/fiedman_tasks3and4_error.png")  -->
-<!-- # grid.raster(img) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ```{r fig.width=200,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/fiedman_tasks3and4_time.png")  -->
-<!-- # grid.raster(img) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ## Analysis Correlation between Errors and Work division -->
-<!-- #  -->
-<!-- #  -->
-<!-- # ```{r fig.width=200,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/Correlacao_Error_DistribuicaoDeTrabalho.png")  -->
-<!-- # grid.raster(img) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- #  -->
-<!-- # ```{r fig.width=200,echo=FALSE} -->
-<!-- # library(png) -->
-<!-- # library(grid) -->
-<!-- # img <- readPNG("../../Results/Regressao_Error_DistTrabalho.png")  -->
-<!-- # grid.raster(img) -->
-<!-- # ``` -->
-
-
-
-
-
 
