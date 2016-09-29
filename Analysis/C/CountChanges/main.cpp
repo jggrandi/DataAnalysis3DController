@@ -1,3 +1,15 @@
+/* Count the user roles changes
+Input: The user roles (Output of getUserRoles.R script ) 
+Output: How many times an user changed role
+
+To feed this program use (for example):
+ cat ../../R/ExtractUserRoles/AllUsersRolesRaw1-5.csv | ./CountChanges
+
+ Written by Jerônimo Grandi.
+ September 2016
+*/
+
+
 #include <iostream>
 
 using namespace std;
