@@ -1,4 +1,4 @@
-# Symposium on Spatial User Interaction Data Analysis
+# ACM CHI Conference on Human Factors in Computing Systems
 
 ## Folder organization:
 
