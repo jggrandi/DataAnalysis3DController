@@ -207,11 +207,19 @@ transformations (translation, rotation, scale). We call this swap a role change.
 
 ```{r roles_plot}
 rolesGr <- ggplot(sourceDataRoles, aes(x=as.character(V1), y=V2)) + geom_boxplot()+labs(x="Group Size", y = "Roles Swap")+theme_bw()+theme(panel.grid.minor = element_blank())+scale_x_discrete(breaks=c("1", "2", "3", "4"),labels=c("1", "2", "3","4"))+ scale_y_continuous(limits = c(0, 56), expand = c(0, 0),breaks = seq(0,56,by=8))
+<<<<<<< HEAD
 df1 <- data.frame(a = c(1,1:4,4), b = c(54, 54, 54, 54,54,54))
 df2 <- data.frame(a = c(1,1:3,3), b = c(51, 51, 51, 51, 51))
 df3 <- data.frame(a = c(2,2:3,3), b = c(48, 48, 48, 48))
 df4 <- data.frame(a = c(2,2:4,4), b = c(45, 45, 45, 45,45))
 rolesGr + geom_line(data = df1, aes(x = a, y = b),linetype="dotted") + annotate("text", x = 2.5, y = 54.1, label = "****", size = 5)+ 
+=======
+df1 <- data.frame(a = c(1,1:2,2), b = c(54, 54, 54, 54))
+df2 <- data.frame(a = c(1,1:3,3), b = c(51, 51, 51, 51, 51))
+df3 <- data.frame(a = c(2,2:3,3), b = c(48, 48, 48, 48))
+df4 <- data.frame(a = c(2,2:4,4), b = c(45, 45, 45, 45,45))
+rolesGr + geom_line(data = df1, aes(x = a, y = b),linetype="dotted") + annotate("text", x = 1.5, y = 54.1, label = "****", size = 5)+ 
+>>>>>>> 7ee33b75117bb812a06e5bab09ed679d9f2cfa39
   geom_line(data = df2, aes(x = a, y = b),linetype="dotted") + annotate("text", x = 2, y = 51.1, label = "****", size = 5)+
   geom_line(data = df3, aes(x = a, y = b),linetype="dotted") + annotate("text", x = 2.5, y = 48.1, label = "**", size = 5)+
   geom_line(data = df4, aes(x = a, y = b),linetype="dotted") + annotate("text", x = 3, y = 45.1, label = "****", size = 5)
