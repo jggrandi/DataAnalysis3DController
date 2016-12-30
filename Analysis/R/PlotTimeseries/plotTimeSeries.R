@@ -75,49 +75,46 @@ p1 <- ggplot() +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U2Trans, color = "blue"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U3Trans, color = "green"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U4Trans, color = "black"))  +
-  theme_bw()+
+  theme_bw()+theme(panel.grid.minor = element_blank())+
   scale_x_continuous(limits = c(0, 60), expand = c(0, 0),breaks = c(0,10,20,30,40,50,60))+
-  scale_y_continuous(expand = c(0, 0))+
+  scale_y_continuous(limits = c(0,0.4), expand = c(0, 0),breaks = c(0,0.1,0.2,0.3,0.4))+
   xlab('data_date') +
   ylab('Translation')+
   theme(axis.title.x = element_blank(),axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.x=element_blank())
+        axis.ticks.x=element_blank())
 
 p2 <- ggplot() + 
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U1Rot, color = "red")) +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U2Rot, color = "blue"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U3Rot, color = "green"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U4Rot, color = "black"))  +
-  theme_bw()+
-  scale_x_continuous(limits = c(0, 60), expand = c(0, 0),breaks = c(0,10,20,30,40,50,60))+
-  scale_y_continuous(expand = c(0, 0))+
+  theme_bw()+theme(panel.grid.minor = element_blank())+
+  scale_x_continuous(limits = c(0, 60), expand = c(0, 0), breaks = c(0,10,20,30,40,50,60))+
+  scale_y_continuous(limits = c(0, 10), expand = c(0, 0), breaks = c(0,2.5,5,7.5,10))+
   xlab('data_date') +
   ylab('Rotation')+
   theme(axis.title.x = element_blank(),axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.x=element_blank())
+        axis.ticks.x=element_blank())
 p3 <- ggplot() + 
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U1Scale, color = "red")) +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U2Scale, color = "blue"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U3Scale, color = "green"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U4Scale, color = "black"))  +
-  theme_bw()+
+  theme_bw()+theme(panel.grid.minor = element_blank())+
   scale_x_continuous(limits = c(0, 60), expand = c(0, 0),breaks = c(0,10,20,30,40,50,60))+
-  scale_y_continuous(expand = c(0, 0))+
+  scale_y_continuous(limits = c(0, 0.04), expand = c(0, 0), breaks = c(0, 0.01, 0.02,0.03,0.04))+
   xlab('') +
   ylab('Scale')+
   theme(axis.title.x = element_blank(),axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.x=element_blank())
+        axis.ticks.x=element_blank())
 p4 <- ggplot() + 
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U1Cam, color = "red")) +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U2Cam, color = "blue"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U3Cam, color = "green"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U4Cam, color = "black"))  +
-  theme_bw()+
+  theme_bw()+theme(panel.grid.minor = element_blank())+
   scale_x_continuous(limits = c(0, 60), expand = c(0, 0),breaks = c(0,10,20,30,40,50,60))+
-  scale_y_continuous(expand = c(0, 0))+
+  scale_y_continuous(limits = c(0, 20), expand = c(0, 0), breaks = c(0,5,10,15,20))+
   xlab('Time (Seconds)') +
   ylab('Cam. Rotation')+
 
@@ -175,49 +172,46 @@ p1 <- ggplot() +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U2Trans, color = "blue"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U3Trans, color = "green"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U4Trans, color = "black"))  +
-  theme_bw()+
+  theme_bw()+theme(panel.grid.minor = element_blank())+
   scale_x_continuous(limits = c(0, 60), expand = c(0, 0),breaks = c(0,10,20,30,40,50,60))+
   scale_y_continuous(limits = c(0, 0.4), expand = c(0, 0))+
   xlab('data_date') +
   ylab('Translation')+
   theme(axis.title.x = element_blank(),axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.x=element_blank())
+        axis.ticks.x=element_blank())
 
 p2 <- ggplot() + 
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U1Rot, color = "red")) +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U2Rot, color = "blue"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U3Rot, color = "green"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U4Rot, color = "black"))  +
-  theme_bw()+
+  theme_bw()+theme(panel.grid.minor = element_blank())+
   scale_x_continuous(limits = c(0, 60), expand = c(0, 0),breaks = c(0,10,20,30,40,50,60))+
   scale_y_continuous(limits = c(0, 10), expand = c(0, 0))+
   xlab('data_date') +
   ylab('Rotation')+
   theme(axis.title.x = element_blank(),axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.x=element_blank())
+        axis.ticks.x=element_blank())
 p3 <- ggplot() + 
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U1Scale, color = "red")) +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U2Scale, color = "blue"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U3Scale, color = "green"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U4Scale, color = "black"))  +
-  theme_bw()+
+  theme_bw()+theme(panel.grid.minor = element_blank())+
   scale_x_continuous(limits = c(0, 60), expand = c(0, 0),breaks = c(0,10,20,30,40,50,60))+
   scale_y_continuous(limits = c(0, 0.04), expand = c(0, 0),breaks = c(0,0.01,0.02,0.03,0.04))+
   xlab('') +
   ylab('Scale')+
   theme(axis.title.x = element_blank(),axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title.x=element_blank())
+        axis.ticks.x=element_blank())
 p4 <- ggplot() + 
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U1Cam, color = "red")) +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U2Cam, color = "blue"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U3Cam, color = "green"))  +
   geom_line(data = tidyUsers, aes(x = TaskTime, y = U4Cam, color = "black"))  +
-  theme_bw()+
+  theme_bw()+theme(panel.grid.minor = element_blank())+
   scale_x_continuous(limits = c(0, 60), expand = c(0, 0),breaks = c(0,10,20,30,40,50,60))+
-  scale_y_continuous(expand = c(0, 0))+
+  scale_y_continuous(limits = c(0, 20), expand = c(0, 0), breaks = c(0,5,10,15,20))+
   xlab('Time (Seconds)') +
   ylab('Cam. Rotation')+
   
