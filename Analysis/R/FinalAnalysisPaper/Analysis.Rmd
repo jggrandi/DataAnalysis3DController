@@ -267,5 +267,5 @@ ggplot(tasksError, aes(x=as.character(task), y=error)) + geom_boxplot()+labs(x="
 
 ```{r userUX}
 UserConfort <- read.csv("UserConfort.csv", sep=",")
-ggplot(UserConfort, aes(x=Action, y=Answer)) + geom_boxplot()+ coord_flip() +labs(x="Transformations", y = "Answers")+theme_bw()+ theme(panel.grid.minor = element_blank())
+ggplot(UserConfort, aes(x=Action, y=Answer)) + geom_boxplot()+ coord_flip() +labs(x="Transformations", y = "Score")+theme_bw()+ theme(panel.grid.minor = element_blank())
 ```
