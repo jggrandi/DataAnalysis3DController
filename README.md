@@ -1,7 +1,9 @@
-# How this repository is organized
+# ACM CHI Interactivity Demonstration 
 
-Each branch correspond to a specific data collected
+## Folder organization:
 
-1. PortasAbertasGame: Data analysis of the pilot test performed in the Portas Abertas event. It was a stacking blocks game.
-2. CHI: Data analysis of the user experiment applied for CHI Conference.
-3. SVR: Data collected in the SVR Symposium
+1. Raw: The raw data collected from user experiments
+2. Formated: The data processed/tabulated for better manipulation
+3. Analysis: Scripts, Markdowns and statistics outputs
+4. Results: Output charts, analysis generated 
+5. Forms: User characterization, After test and Schedule sheets. 
